@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
 
 
 function crateTable() {
-  var sql = 'create table if not exists t_content(text, url, create_time)';
+  var sql = 'create table if not exists t_content(id,text, url, create_time)';
   db.transaction(function(tx) {
   　　tx.executeSql(sql); 
   });
@@ -21,8 +21,7 @@ function crateTable() {
 function addContent(content) {
   content.text = replaceStr(content.text);
 	 var currentDate = new Date().toLocaleString();
-     var sql = "INSERT INTO t_content (text, url, create_time) VALUES ('"+content.text+"','"+content.url+"','"+currentDate+"')";
-     console.info(sql);
+     var sql = "INSERT INTO t_content (id,text, url, create_time) VALUES ('"+new Date().getTime()+"','"+content.text+"','"+content.url+"','"+currentDate+"')";
      db.transaction(function(tx) {
      　　tx.executeSql(sql);
     },
@@ -34,6 +33,16 @@ function addContent(content) {
 
 function findContent(content){
   var sql = 'SELECT * FROM t_content WHERE text = '
+}
+
+function deleteContent(id){
+  var sql = "delete * from t_content where id = '"+id+"'";
+   db.transaction(function(tx) {
+     　　tx.executeSql(sql);
+    },
+    function (tx) {
+        alert('删除失败: ' + tx.message);
+    });
 }
 
 
